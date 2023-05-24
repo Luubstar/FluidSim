@@ -29,7 +29,7 @@ public class EditorCarga extends Menu{
     @Override
     public String Frame() {
         String res = Colors.Bold.colorize("Selecciona el archivo a cargar: \n");
-        long i = 0;
+        int i = 0;
         for (String file : Nombres){
             if (i != pos){res += file + "\n";}
             else{
