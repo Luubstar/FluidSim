@@ -14,10 +14,13 @@ public class EditorCarga extends Menu{
 
     @Override
     public void Start() {
-        System.out.println("Hola?");
         File archivos = new File("./Saves");
 
-        if (archivos.exists() == false){archivos.mkdir();}
+        if (!archivos.exists()){
+            archivos.mkdirs();
+            Nombres = new String[0];
+            Engine.Render();
+        }
         else{
             Nombres = archivos.list();
             Engine.Render();
@@ -34,7 +37,7 @@ public class EditorCarga extends Menu{
             }
             i++;
         }
-        res += Colors.Bold.colorize("\nPulsa ESC para regresar.");
+        res += Colors.Bold.colorize("Pulsa ESC para regresar.");
         return res;
     }
 
@@ -55,7 +58,7 @@ public class EditorCarga extends Menu{
         }
         else if (Keyboard.IsLastKeyOfType("Enter")){
             Keyboard.Clear();
-            Engine.SetMenu(new Editor("Carga", "./Saves/" + Nombres[pos]));
+            Engine.SetMenu(new Editor("Cargar", "./Saves/" + Nombres[pos]));
         }
         else if (Keyboard.IsLastKeyOfType("Escape")){
             Keyboard.Clear();

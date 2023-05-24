@@ -6,7 +6,6 @@ import TextEngine.Engine;
 import TextEngine.Keyboard;
 import TextEngine.Menu;
 import TextEngine.Engine.HAling;
-import TextEngine.Engine.VAling;
 
 public class EditorMainMenu extends Menu {
 
@@ -35,7 +34,7 @@ public class EditorMainMenu extends Menu {
             if (i== pos){res += "> " +SelectedColor.colorize(opciones[i] + " \n");}
             else{res += fontColor.colorize(opciones[i] + " \n"); }
         }
-        return  Engine.VerticalAling(VAling.CENTER, Engine.HorizontalAling(HAling.CENTER,   TitleColor.colorize(Titulo) + "\n" +res));
+        return  Engine.VerticalAling(null, Engine.HorizontalAling(HAling.CENTER,   TitleColor.colorize(Titulo) + "\n" +res));
     }
 
     @Override
