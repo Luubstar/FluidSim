@@ -31,7 +31,7 @@ public class EditorMainMenu extends Menu {
     public String Frame() {
         String res = "";
         for( int i = 0; i < opciones.length; i++){
-            if (i== pos){res += "> " +SelectedColor.colorize(opciones[i] + " \n");}
+            if (i== pos){res += "▶ " +SelectedColor.colorize(opciones[i] + " \n");}
             else{res += fontColor.colorize(opciones[i] + " \n"); }
         }
         return  Engine.VerticalAling(null, Engine.HorizontalAling(HAling.CENTER,   TitleColor.colorize(Titulo) + "\n" +res));
