@@ -52,7 +52,7 @@ public class Editor extends Menu {
             }
 
             String res = "Pincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+ pinceles[pincelSeleccionado].getTexture()+")\n";
-            res +=  "-".repeat(Engine.getWidth());
+            res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
             return res + "\n" + map;
             
         } else {
@@ -203,6 +203,7 @@ public class Editor extends Menu {
                 map = GenerateMap();
                 Engine.Render();
             }
+
         }
     }
 }

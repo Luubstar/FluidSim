@@ -67,6 +67,10 @@ public class StartMenu extends Menu {
             if (pos == 2){ System.exit(1);}
             else if (pos == 1){Engine.SetMenu(new EditorMainMenu());}
         }
+        if (Keyboard.IsLastKeyOfType("Escape")) {
+            Keyboard.Clear();
+            System.exit(1);
+        }
     }
     
     

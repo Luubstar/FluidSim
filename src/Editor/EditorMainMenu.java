@@ -68,6 +68,10 @@ public class EditorMainMenu extends Menu {
             }
             else if (pos == 1){Engine.SetMenu(new EditorCarga());}
         }
+        else if (Keyboard.IsLastKeyOfType("Escape")) {
+            Keyboard.Clear();
+            Engine.SetMenu(new StartMenu());
+        }
     }
     
     
