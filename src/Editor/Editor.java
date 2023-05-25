@@ -51,7 +51,7 @@ public class Editor extends Menu {
                 map = GenerateMap();
             }
 
-            String res = "Pincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+ pinceles[pincelSeleccionado].getTexture()+")\n";
+            String res = "Pulsa ? para ver los controles\nPincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+ pinceles[pincelSeleccionado].getTexture()+")\n";
             res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
             return res + "\n" + map;
             
