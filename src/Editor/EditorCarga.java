@@ -31,11 +31,13 @@ public class EditorCarga extends Menu{
         String res = Colors.Bold.colorize("Selecciona el archivo a cargar: \n");
         int i = 0;
         for (String file : Nombres){
-            if (i != pos){res += file + "\n";}
-            else{
-                res += ">   " + Colors.Italic.colorize(file) + "\n";
+            if (file.contains(".map")){
+                if (i != pos){res += file + "\n";}
+                else{
+                    res += ">   " + Colors.Italic.colorize(file) + "\n";
+                }
+                i++;
             }
-            i++;
         }
         res += Colors.Bold.colorize("Pulsa ESC para regresar.");
         return res;

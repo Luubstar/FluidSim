@@ -7,9 +7,9 @@ import TextEngine.Colors;
 import TextEngine.Engine;
 import TextEngine.Keyboard;
 import TextEngine.Menu;
-import TextEngine.Maps.MapEngine;
 import TextEngine.Maps.MapObject;
 import TextEngine.Maps.Tile;
+import IO.MapIO;
 
 public class Editor extends Menu {
 
@@ -17,6 +17,12 @@ public class Editor extends Menu {
     private String filename;
     private MapObject mapaCargado;
 
+    private String Notification = "Pulsa ? para ver los controles";
+    private String tutorial = "Pulsa ? para ver los controles";
+    private int NotifactionChangerSteps = 300;
+    private int NotificationChangerCurrentSteps = 0;
+
+    
     Tile[][] casillas;
     SimTile[] pinceles;
     int pincelSeleccionado;
@@ -50,8 +56,7 @@ public class Editor extends Menu {
                 LastY = PosY;
                 map = GenerateMap();
             }
-
-            String res = "Pulsa ? para ver los controles\nPincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+ pinceles[pincelSeleccionado].getTexture()+")\n";
+            String res = Notification + "\nPincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+ pinceles[pincelSeleccionado].getTexture()+")\n";
             res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
             return res + "\n" + map;
             
@@ -65,7 +70,8 @@ public class Editor extends Menu {
         if (mode == "Crear") {
             CreateNew();
         } else if (mode == "Cargar") {
-            Load(filename);
+            mapaCargado = MapIO.Load(filename);
+            casillas = mapaCargado.getTiles();
         }
         pinceles = SimTile.LoadTiles("Tiles.db");
     }
@@ -73,6 +79,7 @@ public class Editor extends Menu {
     @Override
     public void Update() {
         Controles();
+        CheckNotification();
         currentframe++;
         if (currentframe >= INTERVALFRAMES){
             currentframe = 0;
@@ -97,14 +104,11 @@ public class Editor extends Menu {
                 }}
 
             MapObject mapa = new MapObject(WIDTH, HEIGHT, tiles);
-            
-            File archivos = new File("./Saves");
+            MapIO.Save(mapa, name);
+            filename = name + ".map";
+            mapaCargado = MapIO.Load("./Saves/" + name + ".map");
+            casillas = mapaCargado.getTiles();
 
-            if (!archivos.exists()){
-                archivos.mkdirs();}
-            MapEngine.saveMap(mapa, "./Saves/" + name + ".map");
-
-            Load("./Saves/" + name + ".map");
         } catch (InterruptedException | IOException e) {
             Engine.LogException(new IOException("Error with the input of the Keyboard "));
             Engine.SetMenu(new EditorMainMenu());
@@ -113,20 +117,6 @@ public class Editor extends Menu {
             Engine.SetMenu(new EditorMainMenu());
         }
     }
-
-    public void Load(String filename) {
-        try {
-            File archivo = new File(filename);
-            if (!archivo.exists()) {throw new IOException("File not found");}
-
-            mapaCargado = MapEngine.loadMap(filename);
-            casillas = mapaCargado.getTiles();
-        } catch (IOException | ClassNotFoundException e) {
-            Engine.LogException(e);
-            Engine.SetMenu(new EditorMainMenu());
-        }
-    }
-
 
     public String GenerateMap(){
         String res = "";
@@ -140,10 +130,26 @@ public class Editor extends Menu {
         return res;
     }
 
+    public void CheckNotification(){
+        if (Notification != tutorial){
+            if(NotificationChangerCurrentSteps < NotifactionChangerSteps){
+                NotificationChangerCurrentSteps++;
+            }
+            else{
+                NotificationChangerCurrentSteps = 0;
+                Notification = tutorial;
+            }
+        }
+    }
+
     public void Controles(){
         if (Keyboard.IsLastKeyOfType("Escape")) {
             Keyboard.Clear();
             Engine.SetMenu(new EditorMainMenu());
+        }
+        else if (Keyboard.IsLastKeyValue("?")){
+            Keyboard.Clear();
+            Engine.SetMenu(new EditorControles(this));
         }
 
         if (mapaCargado != null){
@@ -151,33 +157,38 @@ public class Editor extends Menu {
                 Keyboard.Clear();
                 PosY--;
                 if (PosY < 0){PosY = 0;}
-                else{
-                    Engine.Render();
-                }
+                else{ Engine.Render(); }
             }
             else if(Keyboard.IsLastKeyValue("S") || Keyboard.IsLastKeyOfType("ArrowDown")){
-                Keyboard.Clear();
-                PosY++;
-                if (PosY > mapaCargado.getHeight()-1){PosY = mapaCargado.getHeight()-1;}
+                
+                if (Keyboard.getKeyCharacter() == 'S' && !Keyboard.isControlPressed()){
+                    Keyboard.Clear();
+                    MapIO.Save(mapaCargado, filename);
+                    filename = filename.replace("./Saves/", "Saves/");
+                    File archivo = new File(filename);
+                    Notification = "Mapa guardado como "+archivo.getAbsolutePath();
+                    NotificationChangerCurrentSteps = 0;
+                }
                 else{
-                    Engine.Render();
+                    Keyboard.Clear();
+                    PosY++;
+                    if (PosY > mapaCargado.getHeight()-1){PosY = mapaCargado.getHeight()-1;}
+                    else{
+                        Engine.Render();
+                    }
                 }
             }
             else if(Keyboard.IsLastKeyValue("A") || Keyboard.IsLastKeyOfType("ArrowLeft")){
                 Keyboard.Clear();
                 PosX--;
                 if (PosX < 0){PosX = 0;}
-                else{
-                    Engine.Render();
-                }
+                else{ Engine.Render(); }
             }
             else if(Keyboard.IsLastKeyValue("D") || Keyboard.IsLastKeyOfType("ArrowRight")){
                 Keyboard.Clear();
                 PosX++;
                 if (PosX > mapaCargado.getWidth()-1){PosX = mapaCargado.getWidth()-1;}
-                else{
-                    Engine.Render();
-                }
+                else{ Engine.Render(); }
             }
 
             else if (Keyboard.IsLastKeyValue("E")){
@@ -192,6 +203,23 @@ public class Editor extends Menu {
                 if (pincelSeleccionado < 0){pincelSeleccionado = pinceles.length-1;}
                 Engine.Render();
             }
+            else if (Keyboard.getKeyCharacter() == 'G')
+                {
+                    try{
+                        Keyboard.Clear();
+                        Engine.clearConsole();
+                        String newname ="./Saves/" + Keyboard.Scanner("Introduzca el nombre para el archivo: ") + ".map";
+                        MapIO.Save(mapaCargado, newname);
+                        File archivo = new File(newname.replace("./Saves/", "Saves/"));
+                        Notification = "Mapa guardado en " +archivo.getAbsolutePath();
+                        NotificationChangerCurrentSteps = 0;
+                    }
+                    catch(IOException | InterruptedException e){
+                        Engine.LogException(e);
+                        Notification = "Error al intentar guardar";
+                    }
+                }
+
             else if (Keyboard.IsLastKeyOfType("Enter"))
             {
                 Keyboard.Clear();
