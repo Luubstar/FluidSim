@@ -24,8 +24,8 @@ public class StartMenu extends Menu {
     String[] opciones = {"Cargar", "Editor", "Salir"};
 
     private static final Colors TitleColor = Colors.Cyan;
-    private static final Colors SelectedColor = Colors.Italic;
-    private static final Colors fontColor = Colors.White;
+    private static final Colors fontColor = new Colors(Colors.TYPE_TEXT, 114, 159, 232);
+    Colors bckSelected =  new Colors(Colors.TYPE_TEXT, 80,80,80).and(Colors.Italic);
 
     int pos = 0;
 
@@ -33,7 +33,7 @@ public class StartMenu extends Menu {
     public String Frame() {
         String res = "";
         for( int i = 0; i < opciones.length; i++){
-            if (i== pos){res += "▶ " +SelectedColor.colorize(opciones[i] + " \n");}
+            if (i== pos){res += bckSelected.colorize("▶ " +opciones[i]) + " \n";}
             else{res += fontColor.colorize(opciones[i] + " \n"); }
         }
         return  Engine.VerticalAling(VAling.CENTER, Engine.HorizontalAling(HAling.CENTER,   TitleColor.colorize(Title) + "\n" +res));

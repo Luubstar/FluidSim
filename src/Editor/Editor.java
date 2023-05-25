@@ -104,7 +104,7 @@ public class Editor extends Menu {
                 }}
 
             MapObject mapa = new MapObject(WIDTH, HEIGHT, tiles);
-            MapIO.Save(mapa, name);
+            MapIO.Save(mapa, "./Saves/"+name+".map");
             filename = name + ".map";
             mapaCargado = MapIO.Load("./Saves/" + name + ".map");
             casillas = mapaCargado.getTiles();
