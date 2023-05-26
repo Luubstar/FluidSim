@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import SimObjs.Fluid;
 import SimObjs.SimTile;
 import TextEngine.Engine;
 import TextEngine.Maps.MapObject;
@@ -37,9 +39,23 @@ public class MapIO {
                 if (linea.length() >1){
                     String[] IDs = linea.split(",");
                     for (String ID : IDs){
+                        String[] Datos = ID.trim().split("\\(");
+                        String Tipo = Datos[1].replace(")", "");
+                        ID = Datos[0];
                         int id = Integer.parseInt(ID.trim());
-                        if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
-                        else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
+
+                        if (Tipo == "E"){
+                            if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
+                            else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
+                        }
+                        else if (Tipo == "F"){
+                            if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
+                            else{CasillasNuevas[i][a] = Fluid.InstanceOnCoords(casillas[id-1], a, i);}
+                        }
+                        else{
+                            if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
+                            else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
+                        }
                         a++;
                     }
                 }
@@ -68,9 +84,13 @@ public class MapIO {
             Tile[][] tiles = mapa.getTiles();
             for(Tile[] row : tiles){
                 for (Tile casilla: row){
-                    if (casilla instanceof SimTile){
+                    if (casilla instanceof Fluid){
+                        Fluid c = (Fluid) casilla;
+                        FileData += c.getID() + "(F),";
+                    }
+                    else if (casilla instanceof SimTile){
                         SimTile c = (SimTile) casilla;
-                        FileData += c.getID() + ",";
+                        FileData += c.getID() + "(E),";
                     }
                 }
                 FileData = FileData.substring(0, FileData.length()-1) +  ";";

@@ -128,7 +128,7 @@ public class Editor extends Menu {
                 
                 if (Keyboard.getKeyCharacter() == 'S'){
                     Keyboard.Clear();
-                    MapIO.Save(mapaCargado,"./Saves/" +filename);
+                    MapIO.Save(mapaCargado,filename);
                     filename = filename.replace("./Saves/", "Saves/");
                     File archivo = new File(filename);
                     Notification = "Mapa guardado como "+archivo.getAbsolutePath();
@@ -241,9 +241,9 @@ public class Editor extends Menu {
                 }}
 
             MapObject mapa = new MapObject(WIDTH, HEIGHT, tiles);
-            MapIO.Save(mapa, "./Saves/"+name+".map");
-            filename = name + ".map";
-            mapaCargado = MapIO.Load("./Saves/" + name + ".map");
+            filename = "./Saves/" + name + ".map";
+            MapIO.Save(mapa, filename);
+            mapaCargado = MapIO.Load(filename);
             casillas = mapaCargado.getTiles();
 
         } catch (InterruptedException | IOException e) {
@@ -304,4 +304,5 @@ public class Editor extends Menu {
         }
         return puntosGuardados;
     }
+
 }

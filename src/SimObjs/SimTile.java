@@ -45,9 +45,16 @@ public class SimTile extends Tile {
     }
 
     public static SimTile InstanceOnCoords(SimTile tile, int x, int y){
-        SimTile copy = new SimTile(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
-        copy.setCoords(new Point(x, y));
-        return copy;
+        if (tile.getTags()[0] == "F"){
+            Fluid copy = new Fluid(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
+            copy.setCoords(new Point(x, y));
+            return copy;
+        }
+        else{
+            SimTile copy = new SimTile(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
+            copy.setCoords(new Point(x, y));
+            return copy;
+        }
     }
 
     public static SimTile[] LoadTiles(String dbFilepath){
@@ -63,12 +70,12 @@ public class SimTile extends Tile {
                     Colors c = new Colors(1, Integer.parseInt(colores[0].trim()),Integer.parseInt(colores[1].trim()),Integer.parseInt(colores[2].trim()));
                     if (resultados.getString("Tipo").equals("Estatico")){
                         SimTile t =  new SimTile(resultados.getString("Textura"), resultados.getString("Nombre"), c, resultados.getInt("ID"));
-                        t.setTags(new String[]{"Estatico"});
+                        t.setTags(new String[]{"E"});
                         tiles.add(t);
                     }
                     else if (resultados.getString("Tipo").equals("Fluido")){
                         Fluid f = new Fluid(resultados.getString("Textura"), resultados.getString("Nombre"), c,resultados.getInt("ID"));
-                        f.setTags(new String[]{"Fluido"});
+                        f.setTags(new String[]{"F"});
                         tiles.add(f);
                     }
                 }
