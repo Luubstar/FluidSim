@@ -1,12 +1,15 @@
 package IO;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-
-import Editor.EditorMainMenu;
+import java.io.PrintWriter;
+import SimObjs.SimTile;
 import TextEngine.Engine;
-import TextEngine.Maps.MapEngine;
 import TextEngine.Maps.MapObject;
+import TextEngine.Maps.Tile;
 
 public class MapIO {
     
@@ -15,10 +18,39 @@ public class MapIO {
             File archivo = new File(filename);
             if (!archivo.exists()) {throw new IOException("File not found");}
 
-            return MapEngine.loadMap(filename);
-        } catch (IOException | ClassNotFoundException e) {
+            SimTile[] casillas = SimTile.LoadTiles("Tiles.db");
+
+            FileReader fileReader = new FileReader(filename);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line = bufferedReader.readLine();
+            int Width = Integer.parseInt(line.split(":")[1].split("\n")[0]);
+            line = bufferedReader.readLine();
+            int Height = Integer.parseInt(line.split(":")[1].split("\n")[0]);
+
+            line = bufferedReader.readLine();
+
+            SimTile[][] CasillasNuevas = new SimTile[Height][Width];
+            int i = 0;
+            int a = 0;
+            for(String linea : line.split(";")){
+                a = 0;
+                if (linea.length() >1){
+                    String[] IDs = linea.split(",");
+                    for (String ID : IDs){
+                        int id = Integer.parseInt(ID.trim());
+                        if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
+                        else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
+                        a++;
+                    }
+                }
+                i++;
+            }
+            MapObject mapa = new MapObject(Width, Height,CasillasNuevas );
+            bufferedReader.close();
+            return mapa;
+
+        } catch (IOException e) {
             Engine.LogException(e);
-            Engine.SetMenu(new EditorMainMenu());
             return null;
         }
     }
@@ -29,9 +61,29 @@ public class MapIO {
 
             if (!archivos.exists()){
                 archivos.mkdirs();}
-            MapEngine.saveMap(mapa, name);
+
+            String FileData = "";
+            FileData += "Width:" + mapa.getWidth() + "\n";
+            FileData += "Height:" +  mapa.getHeight() + "\n";
+            Tile[][] tiles = mapa.getTiles();
+            for(Tile[] row : tiles){
+                for (Tile casilla: row){
+                    if (casilla instanceof SimTile){
+                        SimTile c = (SimTile) casilla;
+                        FileData += c.getID() + ",";
+                    }
+                }
+                FileData = FileData.substring(0, FileData.length()-1) +  ";";
+            }
+            FileWriter fileWriter = new FileWriter( name);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.print(FileData);
+            printWriter.close();
+
         }
         catch(IOException e){Engine.LogException(e);}
     }
+
+    
 }
 

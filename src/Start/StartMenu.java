@@ -1,6 +1,7 @@
 package Start;
 
 import Editor.EditorMainMenu;
+import Simulador.SimuladorCarga;
 import TextEngine.Colors;
 import TextEngine.Engine;
 import TextEngine.Keyboard;
@@ -66,6 +67,7 @@ public class StartMenu extends Menu {
             Keyboard.Clear();
             if (pos == 2){ System.exit(1);}
             else if (pos == 1){Engine.SetMenu(new EditorMainMenu());}
+            else if (pos == 0){Engine.SetMenu(new SimuladorCarga());}
         }
         if (Keyboard.IsLastKeyOfType("Escape")) {
             Keyboard.Clear();

@@ -4,15 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 
-
-import Sim.SimTile;
 import TextEngine.Colors;
 import TextEngine.Engine;
 import TextEngine.Keyboard;
 import TextEngine.Menu;
+import TextEngine.Debug.Debug;
 import TextEngine.Maps.MapObject;
 import TextEngine.Maps.Tile;
 import IO.MapIO;
+import SimObjs.SimTile;
+
 import java.awt.Point;
 
 public class Editor extends Menu {
@@ -64,7 +65,7 @@ public class Editor extends Menu {
                 LastY = PosY;
                 map = GenerateMap();
             }
-            String res = Notification + "\nPincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+ pinceles[pincelSeleccionado].getTexture()+")\n";
+            String res = Notification + "\nPincel actual: \n" + pinceles[pincelSeleccionado].Nombre + "("+pinceles[pincelSeleccionado].toString()+")\n";
             res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
             return res + "\n" + map;
             
@@ -75,13 +76,18 @@ public class Editor extends Menu {
 
     @Override
     public void Start() {
+        pinceles = SimTile.LoadTiles("Tiles.db");
+        if (pinceles == null){
+            Debug.LogError("Error loading the Database");
+            Engine.SetMenu(new EditorMainMenu());
+        }
+
         if (mode == "Crear") {
             CreateNew();
         } else if (mode == "Cargar") {
             mapaCargado = MapIO.Load(filename);
             casillas = mapaCargado.getTiles();
         }
-        pinceles = SimTile.LoadTiles("Tiles.db");
     }
 
     @Override
@@ -122,7 +128,7 @@ public class Editor extends Menu {
                 
                 if (Keyboard.getKeyCharacter() == 'S'){
                     Keyboard.Clear();
-                    MapIO.Save(mapaCargado, filename);
+                    MapIO.Save(mapaCargado,"./Saves/" +filename);
                     filename = filename.replace("./Saves/", "Saves/");
                     File archivo = new File(filename);
                     Notification = "Mapa guardado como "+archivo.getAbsolutePath();
@@ -183,7 +189,7 @@ public class Editor extends Menu {
             {
                 if(!isDrawingSquare){
                     Keyboard.Clear();
-                    mapaCargado.setTile(PosX, PosY, pinceles[pincelSeleccionado].asTile());
+                    mapaCargado.setTile(PosX, PosY, SimTile.InstanceOnCoords(pinceles[pincelSeleccionado], PosX, PosY));
                     drawCursor = true;
                     currentframe = 0;
                     LastX = PosX;
@@ -194,7 +200,7 @@ public class Editor extends Menu {
                 else{
                     Keyboard.Clear();
                     for (Point punto: CreateSquare()){
-                        mapaCargado.setTile((int) punto.getX(), (int) punto.getY(), pinceles[pincelSeleccionado]);
+                        mapaCargado.setTile((int) punto.getX(), (int) punto.getY(),SimTile.InstanceOnCoords(pinceles[pincelSeleccionado],(int) punto.getX(), (int) punto.getY()) );
                     }
                     isDrawingSquare = false;
                     Engine.Render();
@@ -210,7 +216,7 @@ public class Editor extends Menu {
                 }
                 else{
                     for (Point punto: CreateSquare()){
-                        mapaCargado.setTile((int) punto.getX(), (int) punto.getY(), pinceles[pincelSeleccionado]);
+                        mapaCargado.setTile((int) punto.getX(), (int) punto.getY(),SimTile.InstanceOnCoords(pinceles[pincelSeleccionado],(int) punto.getX(), (int) punto.getY()) );
                     }
                     isDrawingSquare = false;
                 }
@@ -230,8 +236,8 @@ public class Editor extends Menu {
             Tile[][] tiles = new Tile[HEIGHT][WIDTH];
             for(int i = 0; i < HEIGHT; i++){
                 for(int a = 0; a < WIDTH; a++){
-                    if(i == 0 || a == WIDTH - 1 || a == 0 || i == HEIGHT -1){tiles[i][a] = new SimTile("█");}
-                    else{tiles[i][a] = new SimTile();}
+                    if(i == 0 || a == WIDTH - 1 || a == 0 || i == HEIGHT -1){tiles[i][a] = SimTile.InstanceOnCoords(pinceles[0], i, a) ;}
+                    else{tiles[i][a] = new SimTile(0);}
                 }}
 
             MapObject mapa = new MapObject(WIDTH, HEIGHT, tiles);
@@ -262,7 +268,7 @@ public class Editor extends Menu {
                 else if(puntosGuardados.size() > 0 && puntosGuardados.contains(new Point(a,i)) && drawCursor){
                     res += pinceles[pincelSeleccionado];
                 }
-                else{res += casillas[i][a].getTexture();}
+                else{res += casillas[i][a].toString();}
             }
             res += "\n";
         }
