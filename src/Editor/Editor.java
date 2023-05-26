@@ -2,6 +2,9 @@ package Editor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+
+
 import Sim.SimTile;
 import TextEngine.Colors;
 import TextEngine.Engine;
@@ -10,6 +13,7 @@ import TextEngine.Menu;
 import TextEngine.Maps.MapObject;
 import TextEngine.Maps.Tile;
 import IO.MapIO;
+import java.awt.Point;
 
 public class Editor extends Menu {
 
@@ -22,7 +26,11 @@ public class Editor extends Menu {
     private int NotifactionChangerSteps = 300;
     private int NotificationChangerCurrentSteps = 0;
 
+    private boolean isDrawingSquare;
+    private int SquareInitX = -1;
+    private int SquareInitY = -1;
     
+
     Tile[][] casillas;
     SimTile[] pinceles;
     int pincelSeleccionado;
@@ -89,63 +97,14 @@ public class Editor extends Menu {
         }
     }
 
-
-    public void CreateNew() {
-        try {
-            String name = Keyboard.Scanner("Name of the map: ");
-            int WIDTH = Integer.parseInt(Keyboard.Scanner("Set Width: "));
-            int HEIGHT = Integer.parseInt(Keyboard.Scanner("Set Height: "));
-
-            Tile[][] tiles = new Tile[HEIGHT][WIDTH];
-            for(int i = 0; i < HEIGHT; i++){
-                for(int a = 0; a < WIDTH; a++){
-                    if(i == 0 || a == WIDTH - 1 || a == 0 || i == HEIGHT -1){tiles[i][a] = new SimTile("█");}
-                    else{tiles[i][a] = new SimTile();}
-                }}
-
-            MapObject mapa = new MapObject(WIDTH, HEIGHT, tiles);
-            MapIO.Save(mapa, "./Saves/"+name+".map");
-            filename = name + ".map";
-            mapaCargado = MapIO.Load("./Saves/" + name + ".map");
-            casillas = mapaCargado.getTiles();
-
-        } catch (InterruptedException | IOException e) {
-            Engine.LogException(new IOException("Error with the input of the Keyboard "));
-            Engine.SetMenu(new EditorMainMenu());
-        } catch (NumberFormatException e) {
-            Engine.LogException(new NumberFormatException("The given value isn't an int "));
-            Engine.SetMenu(new EditorMainMenu());
-        }
-    }
-
-    public String GenerateMap(){
-        String res = "";
-        for(int i = 0; i < casillas.length; i++){
-            for(int a = 0; a < casillas[0].length; a++){
-                if (i == PosY && a == PosX && drawCursor){res += cursor;}
-                else{res += casillas[i][a].getTexture();}
-            }
-            res += "\n";
-        }
-        return res;
-    }
-
-    public void CheckNotification(){
-        if (Notification != tutorial){
-            if(NotificationChangerCurrentSteps < NotifactionChangerSteps){
-                NotificationChangerCurrentSteps++;
-            }
-            else{
-                NotificationChangerCurrentSteps = 0;
-                Notification = tutorial;
-            }
-        }
-    }
-
     public void Controles(){
-        if (Keyboard.IsLastKeyOfType("Escape")) {
+        if (Keyboard.IsLastKeyOfType("Escape") && !isDrawingSquare) {
             Keyboard.Clear();
             Engine.SetMenu(new EditorMainMenu());
+        }
+        else if (Keyboard.IsLastKeyOfType("Escape") && !isDrawingSquare){
+            Keyboard.Clear();
+            isDrawingSquare = false;
         }
         else if (Keyboard.IsLastKeyValue("?")){
             Keyboard.Clear();
@@ -161,7 +120,7 @@ public class Editor extends Menu {
             }
             else if(Keyboard.IsLastKeyValue("S") || Keyboard.IsLastKeyOfType("ArrowDown")){
                 
-                if (Keyboard.getKeyCharacter() == 'S' && !Keyboard.isControlPressed()){
+                if (Keyboard.getKeyCharacter() == 'S'){
                     Keyboard.Clear();
                     MapIO.Save(mapaCargado, filename);
                     filename = filename.replace("./Saves/", "Saves/");
@@ -222,16 +181,121 @@ public class Editor extends Menu {
 
             else if (Keyboard.IsLastKeyOfType("Enter"))
             {
+                if(!isDrawingSquare){
+                    Keyboard.Clear();
+                    mapaCargado.setTile(PosX, PosY, pinceles[pincelSeleccionado].asTile());
+                    drawCursor = true;
+                    currentframe = 0;
+                    LastX = PosX;
+                    LastY = PosY;
+                    map = GenerateMap();
+                    Engine.Render();
+                }
+                else{
+                    Keyboard.Clear();
+                    for (Point punto: CreateSquare()){
+                        mapaCargado.setTile((int) punto.getX(), (int) punto.getY(), pinceles[pincelSeleccionado]);
+                    }
+                    isDrawingSquare = false;
+                    Engine.Render();
+                }
+            }
+            else if (Keyboard.IsLastKeyValue("b")){
                 Keyboard.Clear();
-                mapaCargado.setTile(PosX, PosY, pinceles[pincelSeleccionado].asTile());
-                drawCursor = true;
-                currentframe = 0;
-                LastX = PosX;
-                LastY = PosY;
-                map = GenerateMap();
+
+                if (!isDrawingSquare){
+                    SquareInitX = PosX;
+                    SquareInitY = PosY;
+                    isDrawingSquare = true;
+                }
+                else{
+                    for (Point punto: CreateSquare()){
+                        mapaCargado.setTile((int) punto.getX(), (int) punto.getY(), pinceles[pincelSeleccionado]);
+                    }
+                    isDrawingSquare = false;
+                }
+
                 Engine.Render();
             }
 
         }
+    }
+
+    public void CreateNew() {
+        try {
+            String name = Keyboard.Scanner("Name of the map: ");
+            int WIDTH = Integer.parseInt(Keyboard.Scanner("Set Width: "));
+            int HEIGHT = Integer.parseInt(Keyboard.Scanner("Set Height: "));
+
+            Tile[][] tiles = new Tile[HEIGHT][WIDTH];
+            for(int i = 0; i < HEIGHT; i++){
+                for(int a = 0; a < WIDTH; a++){
+                    if(i == 0 || a == WIDTH - 1 || a == 0 || i == HEIGHT -1){tiles[i][a] = new SimTile("█");}
+                    else{tiles[i][a] = new SimTile();}
+                }}
+
+            MapObject mapa = new MapObject(WIDTH, HEIGHT, tiles);
+            MapIO.Save(mapa, "./Saves/"+name+".map");
+            filename = name + ".map";
+            mapaCargado = MapIO.Load("./Saves/" + name + ".map");
+            casillas = mapaCargado.getTiles();
+
+        } catch (InterruptedException | IOException e) {
+            Engine.LogException(new IOException("Error with the input of the Keyboard "));
+            Engine.SetMenu(new EditorMainMenu());
+        } catch (NumberFormatException e) {
+            Engine.LogException(new NumberFormatException("The given value isn't an int "));
+            Engine.SetMenu(new EditorMainMenu());
+        }
+    }
+
+    public String GenerateMap(){
+        String res = "";
+        HashSet<Point> puntosGuardados = new HashSet<>();
+        if (isDrawingSquare && drawCursor){
+            puntosGuardados = CreateSquare();
+        }
+
+        for(int i = 0; i < casillas.length; i++){
+            for(int a = 0; a < casillas[0].length; a++){
+                if (i == PosY && a == PosX && drawCursor){res += cursor;}
+                else if(puntosGuardados.size() > 0 && puntosGuardados.contains(new Point(a,i)) && drawCursor){
+                    res += pinceles[pincelSeleccionado];
+                }
+                else{res += casillas[i][a].getTexture();}
+            }
+            res += "\n";
+        }
+        return res;
+    }
+
+    public void CheckNotification(){
+        if (Notification != tutorial){
+            if(NotificationChangerCurrentSteps < NotifactionChangerSteps){
+                NotificationChangerCurrentSteps++;
+            }
+            else{
+                NotificationChangerCurrentSteps = 0;
+                Notification = tutorial;
+            }
+        }
+    }
+
+    public HashSet<Point> CreateSquare(){
+        HashSet<Point> puntosGuardados = new HashSet<>();
+        int PosXNew = PosX;
+        if (PosX > SquareInitX){PosXNew++;}
+        else{PosXNew--;}
+
+        int PosYNew = PosY;
+        if (PosY > SquareInitY){PosYNew++;}                    
+        else{PosYNew--;}
+
+        for(int i = SquareInitX; i != PosXNew; i += -(SquareInitX-PosXNew)/Math.abs(SquareInitX-PosXNew)){
+            for(int a = SquareInitY; a != PosYNew; a += -(SquareInitY-PosYNew)/Math.abs(SquareInitY-PosYNew)){
+                puntosGuardados.add(new Point(i,a));
+            }
+        }
+        return puntosGuardados;
     }
 }

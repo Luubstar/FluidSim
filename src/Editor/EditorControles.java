@@ -24,6 +24,7 @@ A / ←: Mueve el cursor a la izquierda
 D / →: Mueve el cursor a la derecha
 Enter: Pinta una casilla
 Q/E  : Cambia el pincel a otra casilla
+b    : Entra en el modo para dibujar cuadrados
 
 Combinaciones:
 Shift + S  : Guarda el mapa sobreescribiendolo
