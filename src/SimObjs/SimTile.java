@@ -47,12 +47,14 @@ public class SimTile extends Tile {
     public static SimTile InstanceOnCoords(SimTile tile, int x, int y){
         if (tile.getTags()[0] == "F"){
             Fluid copy = new Fluid(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
+            copy.setTags(tile.getTags());
             copy.setCoords(new Point(x, y));
             return copy;
         }
         else{
             SimTile copy = new SimTile(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
             copy.setCoords(new Point(x, y));
+            copy.setTags(tile.getTags());
             return copy;
         }
     }

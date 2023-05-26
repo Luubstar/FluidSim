@@ -5,7 +5,6 @@ import Start.StartMenu;
 import TextEngine.Engine;
 import TextEngine.Keyboard;
 import TextEngine.Menu;
-import TextEngine.Debug.Debug;
 import TextEngine.Maps.MapObject;
 import TextEngine.Maps.Tile;
 
@@ -14,7 +13,7 @@ public class Simulador extends Menu{
     MapObject mapa;
     Tile[][] casillas; 
     int currentPhysicTick = 0;
-    int PhysicTickPerMov = 10;
+    int PhysicTickPerMov = 100;
 
     public Simulador(MapObject mapa){
         this.mapa = mapa;
@@ -22,7 +21,7 @@ public class Simulador extends Menu{
 
     @Override
     public void Start() {
-        casillas = mapa.getTiles();
+        casillas = mapa.getTiles().clone();
     }
 
     @Override
@@ -57,16 +56,14 @@ public class Simulador extends Menu{
 
             for (Tile[] Fila : casillas ){
                 for (Tile casilla : Fila){
-                    Debug.LogMessage(casilla.getTexture());
                     if (casilla instanceof Fluid){
                         Fluid c = (Fluid) casilla;
-                        Debug.LogMessage("Ticking");
-                        c.CheckMovement(mapa);
+                        if (c.getID() > 0 && c.getNombre() != null ){c.CheckMovement(mapa);}
                     }
                 }
             }
             Engine.Render();
-
+            casillas = mapa.getTiles().clone();
         }
         else{currentPhysicTick++;}
     }
