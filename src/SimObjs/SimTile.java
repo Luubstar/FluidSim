@@ -44,6 +44,11 @@ public class SimTile extends Tile {
         return new Tile(this.getTexture(), this.getColor());
     }
 
+    public String getTileType(){
+        try{return this.getTags()[0];}
+        catch(Exception e){return "";}
+        }
+
     public static SimTile InstanceOnCoords(SimTile tile, int x, int y){
         if (tile.getTags()[0] == "F"){
             Fluid copy = new Fluid(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());

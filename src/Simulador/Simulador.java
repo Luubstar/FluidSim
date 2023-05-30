@@ -13,7 +13,7 @@ public class Simulador extends Menu{
     MapObject mapa;
     Tile[][] casillas; 
     int currentPhysicTick = 0;
-    int PhysicTickPerMov = 100;
+    int PhysicTickPerMov = 20;
 
     public Simulador(MapObject mapa){
         this.mapa = mapa;
@@ -62,6 +62,16 @@ public class Simulador extends Menu{
                     }
                 }
             }
+
+            for (Tile[] Fila : casillas ){
+                for (Tile casilla : Fila){
+                    if (casilla instanceof Fluid){
+                        Fluid c = (Fluid) casilla;
+                        if (c.getID() > 0 && c.getNombre() != null ){c.moved=false;}
+                    }
+                }
+            }
+
             Engine.Render();
             casillas = mapa.getTiles().clone();
         }

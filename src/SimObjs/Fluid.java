@@ -1,5 +1,7 @@
 package SimObjs;
 
+import java.awt.Point;
+
 import TextEngine.Colors;
 import TextEngine.Debug.Debug;
 import TextEngine.Maps.MapObject;
@@ -18,12 +20,52 @@ public class Fluid extends SimTile{
         int OriginX = (int) coords.getX();
         int OriginY = (int) coords.getY();
 
-        if (mapa.isPointValid(OriginX, OriginY+1)){
-            if(mapa.getTile(OriginX, OriginY+1).getTags() == null || mapa.getTile(OriginX, OriginY+1).getTags().length == 0){
-                SimTile lastTile = (SimTile) mapa.getTile(OriginX, OriginY+1);
-                Debug.LogMessage("Moving: " + lastTile.toString());
+        if (!moved){
+            //Si no tiene nada abajo, cae
+            if (isPosMov(mapa, OriginX, OriginY+1)){
+                MoveTo(mapa, OriginX, OriginY+1, OriginX, OriginY);
+            }
+            //Si tiene algo abajo, intenta irse a los lados, si tiene los dos vacíos, intenta ir a uno de los dos
+            else if(isPosMov(mapa, OriginX+1, OriginY) && !isPosMov(mapa, OriginX-1, OriginY)){
+                MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
+            else if (!isPosMov(mapa, OriginX+1, OriginY) && isPosMov(mapa, OriginX-1, OriginY)){
+                    MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);
+            }
+            else if(isPosMov(mapa, OriginX+1, OriginY) && isPosMov(mapa, OriginX-1, OriginY)){
+                    int temp = (Math.random() <= 0.5) ? 1 : 2;
+                    if (temp == 1){MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
+                    else{MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);}
+            }
+
+        }
+    }
+    
+
+    public boolean isPosMov(MapObject mapa,int x, int y){
+        return (mapa.isPointValid(x,y)&& mapa.getTile(x, y).getTags() == null || mapa.getTile(x, y).getTags().length == 0);
+    }
+
+    public void MoveTo(MapObject mapa, int x, int y, int originX, int originY){
+        SimTile lastTile = (SimTile) mapa.getTile(x, y);
+
+        if(mapa.getTile(x, y).getTags() == null || mapa.getTile(x, y).getTags().length == 0){
+            if (lastTile.getTileType() == "F"){/* TODO: Se ha de bloquear porque ahora no se mezclan
+                Fluid tile = (Fluid) mapa.getTile(OriginX, OriginY+1);
+                Debug.LogMessage("Moving: " + tile.toString());
+                this.setCoords(new Point(OriginX, OriginY+1));
+                tile.setCoords(new Point(OriginX, OriginY));
                 mapa.setTile(OriginX, OriginY+1, this);
-                mapa.setTile(OriginX, OriginY, lastTile);
+                mapa.setTile(OriginX, OriginY, tile);
+                moved = true;*/
+            }
+            else{
+                SimTile tile = (SimTile) mapa.getTile(x, y);
+                this.setCoords(new Point(x, y));
+                tile.setCoords(new Point(originX,originY));
+                Debug.LogMessage("Moving: " + tile.toString());
+                mapa.setTile(x, y, this);
+                mapa.setTile(originX, originY, tile);
+                moved = true;
             }
         }
     }
