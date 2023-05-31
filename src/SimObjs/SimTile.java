@@ -55,6 +55,7 @@ public class SimTile extends Tile {
             Fluid c = (Fluid) tile;
             copy.setTags(tile.getTags());
             copy.setCoords(new Point(x, y));
+            copy.setPropiedades(c.getPropiedades());
             copy.moved = c.moved;
             return copy;
         }
@@ -95,6 +96,7 @@ public class SimTile extends Tile {
                     }
                     else if (resultados.getString("Tipo").equals("Fluido")){
                         Fluid f = new Fluid(resultados.getString("Textura"), resultados.getString("Nombre"), c,resultados.getInt("ID"));
+                        f.setPropiedades(resultados.getFloat("Densidad"), resultados.getFloat("Viscosidad"), resultados.getFloat("TensionS"));
                         f.setTags(new String[]{"F"});
                         tiles.add(f);
                     }

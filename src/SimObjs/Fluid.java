@@ -7,12 +7,36 @@ import TextEngine.Maps.MapObject;
 
 public class Fluid extends SimTile{
     public boolean moved;
+    public float masa = 100;
+    private float densidad = 100;
+    private float viscosidad = 100;
+    private float TensionS = 100;
+
     public Fluid(int ID){super(ID);}
 
     public Fluid(String T,int ID){super(T,ID);}
 
     public Fluid(String T, String N,int ID){super(T, N,ID);}
     public Fluid(String T, String N, Colors C,int ID){super(T,N, C,ID);}
+
+    public void setPropiedades(float d, float v, float t){
+        masa = d;
+        densidad = d;
+        viscosidad = v;
+        TensionS = t;
+    }
+
+    public void setPropiedades(String p){
+        String[] datos = p.split("&&");
+        masa = Float.parseFloat(datos[0]);
+        densidad = Float.parseFloat(datos[1]);
+        viscosidad = Float.parseFloat(datos[2]);
+        TensionS = Float.parseFloat(datos[3]);
+    }
+
+    public String getPropiedades(){
+        return masa + "&&" + densidad + "&&" + viscosidad + "&&" + TensionS;
+    }
 
     public void CheckMovement(MapObject mapa, boolean switches){
 

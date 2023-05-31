@@ -40,21 +40,25 @@ public class MapIO {
                 if (linea.length() >1){
                     String[] IDs = linea.split(",");
                     for (String ID : IDs){
-                        String[] Datos = ID.trim().split("\\(");
-                        String Tipo = Datos[1].replace(")", "");
-                        ID = Datos[0];
-                        int id = Integer.parseInt(ID.trim());
+                        String Tipo = ID.trim().split("\\(")[1].split("\\)")[0];
+                        String DatosExtra = ID.trim();
+                        ID = DatosExtra.split("\\(")[0];
+                        int id = Integer.parseInt(ID);
 
-                        if (Tipo == "E"){
+                        if (Tipo.equals("E")){
                             if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
                             else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id], a, i);}
                         }
-                        else if (Tipo == "F"){
-                            if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
-                            else{CasillasNuevas[i][a] = Fluid.InstanceOnCoords(casillas[id], a, i);}
+                        else if (Tipo.equals("F")){
+                            if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
+                            else{        
+                                String DatosFluido = DatosExtra.split("\\[")[1].split("\\]")[0];
+                                Fluid liquido = (Fluid) Fluid.InstanceOnCoords(casillas[Integer.parseInt(ID.replace("[" +DatosFluido+"]",""))], a, i);
+                                liquido.setPropiedades(DatosFluido);
+                                CasillasNuevas[i][a] = liquido;}
                         }
-                        else if (Tipo == "G"){
-                            if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
+                        else if (Tipo.equals("G")){
+                            if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
                             else{CasillasNuevas[i][a] = Generador.InstanceOnCoords(casillas[id], a, i);}
                         }
                         else{
@@ -91,7 +95,8 @@ public class MapIO {
                 for (Tile casilla: row){
                     if (casilla instanceof Fluid){
                         Fluid c = (Fluid) casilla;
-                        FileData += c.getID() + "(F),";
+                        String SpecialData = "["+c.getPropiedades()+"]";
+                        FileData += c.getID() + "(F)"+SpecialData+",";
                     }
                     else if (casilla instanceof Generador){
                         Generador c = (Generador) casilla;

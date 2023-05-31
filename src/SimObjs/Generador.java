@@ -47,8 +47,5 @@ public class Generador extends SimTile{
             currentTick = 0;
         }
         else{currentTick++;}
-
-
     }
-
 }
