@@ -17,7 +17,7 @@ public class Simulador extends Menu{
     private MapObject mapa;
     private Tile[][] casillas; 
     private byte currentPhysicTick = 0;
-    private byte PhysicTickPerMov = 10;
+    private byte PhysicTickPerMov = 5;
     private byte currentframe = 0;
     private final byte INTERVALFRAMES = 40;
     private boolean drawCursor;
@@ -41,6 +41,7 @@ public class Simulador extends Menu{
 
     @Override
     public String Frame() {
+        String res = "";
         if (mapa != null) {
 
             if (LastX != PosX || LastY != PosY){
@@ -58,9 +59,14 @@ public class Simulador extends Menu{
                 LastX = PosX;
                 LastY = PosY;
                 mapaS = GenerateMap();
-            }
+            }   
 
-            return mapaS;
+            if (backgroundTile != null && backgroundTile.getNombre() != null){
+                res = "Datos de la casilla: " + backgroundTile.getNombre() + "\n";
+            }
+            res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
+
+            return res + "\n" + mapaS;
         }
         else{return "Loading...";}
     }
@@ -87,7 +93,7 @@ public class Simulador extends Menu{
                 for (Tile casilla : Fila){
                     if (casilla instanceof Fluid){
                         Fluid c = (Fluid) casilla;
-                        if (c.getID() > 0 && c.getNombre() != null ){c.CheckMovement(mapa);}
+                        if (c.getID() > 0 && c.getNombre() != null ){c.CheckMovement(mapa,true);}
                     }
                     else if(casilla instanceof Generador){
                         Generador c = (Generador) casilla;

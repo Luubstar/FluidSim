@@ -14,7 +14,7 @@ public class Fluid extends SimTile{
     public Fluid(String T, String N,int ID){super(T, N,ID);}
     public Fluid(String T, String N, Colors C,int ID){super(T,N, C,ID);}
 
-    public void CheckMovement(MapObject mapa){
+    public void CheckMovement(MapObject mapa, boolean switches){
 
         int OriginX = (int) coords.getX();
         int OriginY = (int) coords.getY();
@@ -22,18 +22,18 @@ public class Fluid extends SimTile{
         if (!moved){
             //Si no tiene nada abajo, cae
             if (isPosMov(mapa, OriginX, OriginY+1)){
-                MoveTo(mapa, OriginX, OriginY+1, OriginX, OriginY);
+                MoveTo(mapa, OriginX, OriginY+1, OriginX, OriginY,switches);
             }
             //Si tiene algo abajo, intenta irse a los lados, si tiene los dos vacíos, intenta ir a uno de los dos
             else if(isPosMov(mapa, OriginX+1, OriginY) && !isPosMov(mapa, OriginX-1, OriginY)){
-                MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
+                MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY,switches);}
             else if (!isPosMov(mapa, OriginX+1, OriginY) && isPosMov(mapa, OriginX-1, OriginY)){
-                MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);
+                MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY,switches);
             }
             else if(isPosMov(mapa, OriginX+1, OriginY) && isPosMov(mapa, OriginX-1, OriginY)){
                 int temp = (Math.random() <= 0.5) ? 1 : 2;
-                if (temp == 1){MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
-                else{MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);}
+                if (temp == 1){MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY,switches);}
+                else{MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY,switches);}
             }
 
         }
@@ -44,7 +44,7 @@ public class Fluid extends SimTile{
         return (mapa.isPointValid(x,y)&& mapa.getTile(x, y).getTags() == null ||  mapa.getTile(x, y).getTags().length == 0);
     }
 
-    public void MoveTo(MapObject mapa, int x, int y, int originX, int originY){
+    public void MoveTo(MapObject mapa, int x, int y, int originX, int originY, boolean switches){
         SimTile lastTile = (SimTile) mapa.getTile(x, y);
 
         if(mapa.getTile(x, y).getTags() == null || mapa.getTile(x, y).getTags().length == 0){
@@ -60,9 +60,10 @@ public class Fluid extends SimTile{
             else{
                 SimTile tile = (SimTile) mapa.getTile(x, y);
                 this.setCoords(new Point(x, y));
-                tile.setCoords(new Point(originX,originY));
                 mapa.setTile(x, y, this);
-                mapa.setTile(originX, originY, tile);
+                if (switches){
+                    tile.setCoords(new Point(originX,originY));
+                    mapa.setTile(originX, originY, tile);}
                 moved = true;
             }
         }
