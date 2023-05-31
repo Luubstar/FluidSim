@@ -28,12 +28,12 @@ public class Fluid extends SimTile{
             else if(isPosMov(mapa, OriginX+1, OriginY) && !isPosMov(mapa, OriginX-1, OriginY)){
                 MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
             else if (!isPosMov(mapa, OriginX+1, OriginY) && isPosMov(mapa, OriginX-1, OriginY)){
-                    MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);
+                MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);
             }
             else if(isPosMov(mapa, OriginX+1, OriginY) && isPosMov(mapa, OriginX-1, OriginY)){
-                    int temp = (Math.random() <= 0.5) ? 1 : 2;
-                    if (temp == 1){MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
-                    else{MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);}
+                int temp = (Math.random() <= 0.5) ? 1 : 2;
+                if (temp == 1){MoveTo(mapa, OriginX+1, OriginY, OriginX, OriginY);}
+                else{MoveTo(mapa, OriginX-1, OriginY, OriginX, OriginY);}
             }
 
         }

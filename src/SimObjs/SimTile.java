@@ -52,8 +52,10 @@ public class SimTile extends Tile {
     public static SimTile InstanceOnCoords(SimTile tile, int x, int y){
         if (tile.getTags()[0] == "F"){
             Fluid copy = new Fluid(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
+            Fluid c = (Fluid) tile;
             copy.setTags(tile.getTags());
             copy.setCoords(new Point(x, y));
+            copy.moved = c.moved;
             return copy;
         }
         else if (tile.getTags()[0] == "G"){
@@ -87,7 +89,7 @@ public class SimTile extends Tile {
                         tiles.add(t);
                     }
                     else if (resultados.getString("Tipo").equals("Generador")){
-                        SimTile t =  new SimTile(resultados.getString("Textura"), resultados.getString("Nombre"), c, resultados.getInt("ID"));
+                        Generador t =  new Generador(resultados.getString("Textura"), resultados.getString("Nombre"), c, resultados.getInt("ID"));
                         t.setTags(new String[]{"G"});
                         tiles.add(t);
                     }

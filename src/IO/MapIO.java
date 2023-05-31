@@ -47,19 +47,19 @@ public class MapIO {
 
                         if (Tipo == "E"){
                             if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
-                            else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
+                            else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id], a, i);}
                         }
                         else if (Tipo == "F"){
                             if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
-                            else{CasillasNuevas[i][a] = Fluid.InstanceOnCoords(casillas[id-1], a, i);}
+                            else{CasillasNuevas[i][a] = Fluid.InstanceOnCoords(casillas[id], a, i);}
                         }
                         else if (Tipo == "G"){
                             if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
-                            else{CasillasNuevas[i][a] = Generador.InstanceOnCoords(casillas[id-1], a, i);}
+                            else{CasillasNuevas[i][a] = Generador.InstanceOnCoords(casillas[id], a, i);}
                         }
                         else{
                             if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
-                            else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
+                            else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id], a, i);}
                         }
                         a++;
                     }

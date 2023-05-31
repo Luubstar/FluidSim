@@ -22,7 +22,6 @@ W / ↑: Mueve el cursor arriba
 S / ↓: Mueve el cursor abajo
 A / ←: Mueve el cursor a la izquierda
 D / →: Mueve el cursor a la derecha
-Enter: Pinta una casilla
 
         """;
 

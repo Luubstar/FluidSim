@@ -41,9 +41,10 @@ public class Editor extends Menu {
     int LastX = -1;
     int LastY = -1;
     byte currentframe = 0;
-    byte INTERVALFRAMES = 40;
+    final byte INTERVALFRAMES = 40;
     boolean drawCursor = true;
     String cursor = Colors.Red.colorize("X");
+    SimTile backgroundTile;
 
     String map = "";
 
@@ -59,6 +60,16 @@ public class Editor extends Menu {
         if (mapaCargado != null) {
 
             if (LastX != PosX || LastY != PosY){
+                backgroundTile =  (SimTile) mapaCargado.getTile(PosX, PosY);
+                if (backgroundTile.getID() > 0){
+                    int[] RGB = Colors.ReturnRGB(backgroundTile.getColor());
+                    cursor = Colors.CreateBackgroundColor(RGB[0], RGB[1], RGB[2]).and(Colors.Red).colorize(Colors.clearColor(cursor));
+                }
+                else{
+                    if (cursor != Colors.Red.colorize(cursor)){
+                    cursor = Colors.Red.colorize(Colors.clearColor(cursor));}
+                }
+
                 drawCursor = true;
                 currentframe = 0;
                 LastX = PosX;
@@ -236,7 +247,7 @@ public class Editor extends Menu {
             Tile[][] tiles = new Tile[HEIGHT][WIDTH];
             for(int i = 0; i < HEIGHT; i++){
                 for(int a = 0; a < WIDTH; a++){
-                    if(i == 0 || a == WIDTH - 1 || a == 0 || i == HEIGHT -1){tiles[i][a] = SimTile.InstanceOnCoords(pinceles[0], i, a) ;}
+                    if(i == 0 || a == WIDTH - 1 || a == 0 || i == HEIGHT -1){tiles[i][a] = SimTile.InstanceOnCoords(pinceles[1], i, a) ;}
                     else{tiles[i][a] = new SimTile(0);}
                 }}
 
