@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import SimObjs.Fluid;
+import SimObjs.Generador;
 import SimObjs.SimTile;
 import TextEngine.Engine;
 import TextEngine.Maps.MapObject;
@@ -52,6 +53,10 @@ public class MapIO {
                             if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
                             else{CasillasNuevas[i][a] = Fluid.InstanceOnCoords(casillas[id-1], a, i);}
                         }
+                        else if (Tipo == "G"){
+                            if(id <= 0 ){CasillasNuevas[i][a] = new Fluid(0);}
+                            else{CasillasNuevas[i][a] = Generador.InstanceOnCoords(casillas[id-1], a, i);}
+                        }
                         else{
                             if(id <= 0 ){CasillasNuevas[i][a] = new SimTile(0);}
                             else{CasillasNuevas[i][a] = SimTile.InstanceOnCoords(casillas[id-1], a, i);}
@@ -87,6 +92,10 @@ public class MapIO {
                     if (casilla instanceof Fluid){
                         Fluid c = (Fluid) casilla;
                         FileData += c.getID() + "(F),";
+                    }
+                    else if (casilla instanceof Generador){
+                        Generador c = (Generador) casilla;
+                        FileData += c.getID() + "(G),";
                     }
                     else if (casilla instanceof SimTile){
                         SimTile c = (SimTile) casilla;

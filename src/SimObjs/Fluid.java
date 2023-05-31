@@ -3,7 +3,6 @@ package SimObjs;
 import java.awt.Point;
 
 import TextEngine.Colors;
-import TextEngine.Debug.Debug;
 import TextEngine.Maps.MapObject;
 
 public class Fluid extends SimTile{
@@ -41,8 +40,8 @@ public class Fluid extends SimTile{
     }
     
 
-    public boolean isPosMov(MapObject mapa,int x, int y){
-        return (mapa.isPointValid(x,y)&& mapa.getTile(x, y).getTags() == null || mapa.getTile(x, y).getTags().length == 0);
+    public static boolean isPosMov(MapObject mapa,int x, int y){
+        return (mapa.isPointValid(x,y)&& mapa.getTile(x, y).getTags() == null ||  mapa.getTile(x, y).getTags().length == 0);
     }
 
     public void MoveTo(MapObject mapa, int x, int y, int originX, int originY){
@@ -62,7 +61,6 @@ public class Fluid extends SimTile{
                 SimTile tile = (SimTile) mapa.getTile(x, y);
                 this.setCoords(new Point(x, y));
                 tile.setCoords(new Point(originX,originY));
-                Debug.LogMessage("Moving: " + tile.toString());
                 mapa.setTile(x, y, this);
                 mapa.setTile(originX, originY, tile);
                 moved = true;

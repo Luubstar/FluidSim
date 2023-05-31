@@ -56,6 +56,12 @@ public class SimTile extends Tile {
             copy.setCoords(new Point(x, y));
             return copy;
         }
+        else if (tile.getTags()[0] == "G"){
+            Generador copy = new Generador(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
+            copy.setTags(tile.getTags());
+            copy.setCoords(new Point(x, y));
+            return copy;
+        }
         else{
             SimTile copy = new SimTile(tile.getTexture(), tile.getNombre(), tile.getColor(), tile.getID());
             copy.setCoords(new Point(x, y));
@@ -78,6 +84,11 @@ public class SimTile extends Tile {
                     if (resultados.getString("Tipo").equals("Estatico")){
                         SimTile t =  new SimTile(resultados.getString("Textura"), resultados.getString("Nombre"), c, resultados.getInt("ID"));
                         t.setTags(new String[]{"E"});
+                        tiles.add(t);
+                    }
+                    else if (resultados.getString("Tipo").equals("Generador")){
+                        SimTile t =  new SimTile(resultados.getString("Textura"), resultados.getString("Nombre"), c, resultados.getInt("ID"));
+                        t.setTags(new String[]{"G"});
                         tiles.add(t);
                     }
                     else if (resultados.getString("Tipo").equals("Fluido")){

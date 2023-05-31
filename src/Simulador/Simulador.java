@@ -1,6 +1,7 @@
 package Simulador;
 
 import SimObjs.Fluid;
+import SimObjs.Generador;
 import Start.StartMenu;
 import TextEngine.Engine;
 import TextEngine.Keyboard;
@@ -13,7 +14,7 @@ public class Simulador extends Menu{
     MapObject mapa;
     Tile[][] casillas; 
     int currentPhysicTick = 0;
-    int PhysicTickPerMov = 20;
+    int PhysicTickPerMov = 10;
 
     public Simulador(MapObject mapa){
         this.mapa = mapa;
@@ -59,6 +60,10 @@ public class Simulador extends Menu{
                     if (casilla instanceof Fluid){
                         Fluid c = (Fluid) casilla;
                         if (c.getID() > 0 && c.getNombre() != null ){c.CheckMovement(mapa);}
+                    }
+                    else if(casilla instanceof Generador){
+                        Generador c = (Generador) casilla;
+                        if (c.getID() > 0 && c.getNombre() != null ){c.GenerateNew(mapa);}
                     }
                 }
             }
