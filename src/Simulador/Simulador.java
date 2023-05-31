@@ -24,6 +24,7 @@ public class Simulador extends Menu{
     private String mapaS;
     private String cursor = Colors.Red.colorize("X");
     private SimTile backgroundTile;
+    private SimTile LastbackgroundTile;
 
     int PosX = 0;
     int PosY = 0;
@@ -44,8 +45,9 @@ public class Simulador extends Menu{
         String res = "";
         if (mapa != null) {
 
-            if (LastX != PosX || LastY != PosY){
-                backgroundTile =  (SimTile) mapa.getTile(PosX, PosY);
+            backgroundTile =  (SimTile) mapa.getTile(PosX, PosY);
+            if (LastX != PosX || LastY != PosY || !LastbackgroundTile.equals(backgroundTile)){
+                LastbackgroundTile = backgroundTile;
                 if (backgroundTile.getID() > 0){
                     int[] RGB = Colors.ReturnRGB(backgroundTile.getColor());
                     cursor = Colors.CreateBackgroundColor(RGB[0], RGB[1], RGB[2]).and(Colors.Red).colorize(Colors.clearColor(cursor));
@@ -62,7 +64,11 @@ public class Simulador extends Menu{
             }   
 
             if (backgroundTile != null && backgroundTile.getNombre() != null){
-                res = "Datos de la casilla: " + backgroundTile.getNombre() + "\n";
+                res = "Datos de la casilla: " + backgroundTile.getNombre()  + "\n";
+                if (backgroundTile instanceof Fluid){
+                    Fluid c = (Fluid) backgroundTile;
+                    res += "Densidad: " +c.densidad + "\n";
+                }
             }
             res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
 
