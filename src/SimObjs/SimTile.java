@@ -139,4 +139,11 @@ public class SimTile extends Tile {
     public void setNombre(String Nombre) {
         this.Nombre = Nombre;
     }
+
+    public boolean hasTag(String tag){
+        for (String ptag: getTags()){
+            if (ptag.equals(tag)){return true;}
+        }
+        return false;
+    }
 }

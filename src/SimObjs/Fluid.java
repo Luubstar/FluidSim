@@ -6,9 +6,12 @@ import TextEngine.Colors;
 import TextEngine.Maps.MapObject;
 
 public class Fluid extends SimTile{
+    public static final String[] SizeTexture = new String[]{"▁", "▂","▃","▄","▅","▆", "▇","█"};
+
+
     public boolean moved;
-    public float masa = 100;
-    public float densidad = 100;
+    public float masa = 1000;
+    public float densidad = 1000;
     public float viscosidad = 100;
     public float TensionS = 100;
 
@@ -36,6 +39,16 @@ public class Fluid extends SimTile{
 
     public String getPropiedades(){
         return masa + "&&" + densidad + "&&" + viscosidad + "&&" + TensionS;
+    }
+
+    public static void setTexuraPorMasa(Fluid f){
+        if (f.masa > 0 && f.masa <= f.densidad){
+            float densidadStep = f.densidad/8;
+            float masa = f.masa;
+
+            String textura = SizeTexture[(int) Math.ceil(masa/densidadStep)-1];
+            f.setTexture(textura);
+        }
     }
 
     public void CheckMovement(MapObject mapa, boolean switches){
@@ -72,13 +85,12 @@ public class Fluid extends SimTile{
         SimTile lastTile = (SimTile) mapa.getTile(x, y);
 
         if(mapa.getTile(x, y).getTags() == null || mapa.getTile(x, y).getTags().length == 0){
-            if (lastTile.getTileType() == "F"){/* TODO: Se ha de bloquear porque ahora no se mezclan
-                Fluid tile = (Fluid) mapa.getTile(OriginX, OriginY+1);
-                Debug.LogMessage("Moving: " + tile.toString());
-                this.setCoords(new Point(OriginX, OriginY+1));
-                tile.setCoords(new Point(OriginX, OriginY));
-                mapa.setTile(OriginX, OriginY+1, this);
-                mapa.setTile(OriginX, OriginY, tile);
+            if (lastTile.getTileType() == "F" && lastTile.getID() == this.ID){ 
+                /*Fluid tile = (Fluid) mapa.getTile(x, y);
+                this.setCoords(new Point(x, y));
+                tile.setCoords(new Point(originX, originY));
+                mapa.setTile(x, y, this);
+                mapa.setTile(originX, originY, tile);
                 moved = true;*/
             }
             else{
