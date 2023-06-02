@@ -35,7 +35,7 @@ public class Generador extends SimTile{
             }
         }
         else if(currentTick >= TiempoGenerador){
-            if(mapa.isPointValid((int)coords.getX(), (int)coords.getY()+1) && Fluid.isPosMov(mapa, (int)coords.getX(), (int)coords.getY()+1)){
+            if(mapa.isPointValid((int)coords.getX(), (int)coords.getY()+1) && Fluid.isPosMov(mapa, (int)coords.getX(), (int)coords.getY()+1, fluido)){
                 mapa.setTile((int)coords.getX(), (int)coords.getY()+1, SimTile.InstanceOnCoords(fluido,(int)coords.getX(), (int)coords.getY()+1));
             }
             else if (!hasFluidOver){
