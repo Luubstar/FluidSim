@@ -24,7 +24,7 @@ public class Generador extends SimTile{
         fluido.moved = true;
         fluido.coords = new Point((int)coords.getX(), (int)coords.getY()+1);
         fluido.setTags(new String[]{"F"});
-        fluido.masa = 100;
+        fluido.masa = 250;
         Fluid.setTexuraPorMasa(fluido);
         if (hasFluidOver == true){
             FOverGenerator.CheckMovement(mapa, false);

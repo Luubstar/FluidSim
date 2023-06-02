@@ -82,7 +82,7 @@ public class Fluid extends SimTile{
         if (mapa.isPointValid(x,y) && (Tile.getTags() == null || Tile.getTags().length == 0)){return true;}
         if (mapa.isPointValid(x, y) && (Tile.getTileType() == "F")){
             Fluid T = (Fluid) Tile;
-            if (T.masa < T.densidad && T.ID == a.ID){return true;}
+            if (T.masa < T.densidad && T.ID == a.ID){return true;} 
         }
         return false;
     }
@@ -102,8 +102,8 @@ public class Fluid extends SimTile{
                 setTexuraPorMasa(this);
                 if (this.masa <= 0){
                     mapa.setTile(originX, originY, new SimTile(0));
-                    return;
                 }
+                return;
             }
         }
 

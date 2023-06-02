@@ -25,6 +25,10 @@ public class Simulador extends Menu{
     private String cursor = Colors.Red.colorize("X");
     private SimTile backgroundTile;
     private SimTile LastbackgroundTile;
+    String notificacion = "Presiona ? para ver los controles\n";
+    String tutorial = "Presiona ? para ver los controles\n";
+
+    boolean canmove = true;
 
     int PosX = 0;
     int PosY = 0;
@@ -42,7 +46,7 @@ public class Simulador extends Menu{
 
     @Override
     public String Frame() {
-        String res = "Presiona ? para ver los controles\n";
+        String res = notificacion;
         if (mapa != null) {
 
             backgroundTile =  (SimTile) mapa.getTile(PosX, PosY);
@@ -101,7 +105,7 @@ public class Simulador extends Menu{
 
     @Override
     public void Update() {
-        PhysicEngine();
+        if (canmove){PhysicEngine();}
         Controles();
         currentframe++;
         if (currentframe >= INTERVALFRAMES){
@@ -195,6 +199,12 @@ public class Simulador extends Menu{
                 PosX++;
                 if (PosX > mapa.getWidth()-1){PosX = mapa.getWidth()-1;}
                 else{ Engine.Render(); }
+            }
+            else if(Keyboard.IsLastKeyValue("P")){
+                Keyboard.Clear();
+                Engine.Render();
+                if (notificacion.equals(tutorial)){notificacion = "Simulación pausada\n"; canmove = false;}
+                else{notificacion = tutorial; canmove = true;}
             }
         }
     }
