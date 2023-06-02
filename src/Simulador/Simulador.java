@@ -42,7 +42,7 @@ public class Simulador extends Menu{
 
     @Override
     public String Frame() {
-        String res = "";
+        String res = "Presiona ? para ver los controles\n";
         if (mapa != null) {
 
             backgroundTile =  (SimTile) mapa.getTile(PosX, PosY);
@@ -62,19 +62,41 @@ public class Simulador extends Menu{
                 LastY = PosY;
                 mapaS = GenerateMap();
             }   
-
-            if (backgroundTile != null && backgroundTile.getNombre() != null){
-                res = "Datos de la casilla: " + backgroundTile.getNombre()  + "\n";
-                if (backgroundTile instanceof Fluid){
-                    Fluid c = (Fluid) backgroundTile;
-                    res += "Densidad: " +c.densidad + "\n";
-                }
-            }
-            res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
+            res = DrawExtraUI(res);
 
             return res + "\n" + mapaS;
         }
         else{return "Loading...";}
+    }
+
+    public String DrawExtraUI(String r){
+        String res = r;
+
+        if (backgroundTile != null && backgroundTile.getNombre() != null){
+            Colors T = Colors.CreateTextColor(123, 235, 91);
+            res += T.colorize("Datos de "+backgroundTile.getNombre() +" "+ backgroundTile.toString() +":\n");
+            if (backgroundTile instanceof Fluid){
+                Fluid c = (Fluid) backgroundTile;
+
+                Colors CM = Colors.CreateTextColor(191, 159, 40);
+                Colors CD = Colors.CreateTextColor(40, 90, 191);
+                Colors CV = Colors.CreateTextColor(156, 40, 191);
+                Colors CT = Colors.CreateTextColor(40, 191, 88);
+
+                String Masa = "Masa: " + c.masa + " kg";
+                String Densidad = "Densidad: " + c.densidad + " kg/m³";
+                String Viscosidad = "Viscosidad: " + c.viscosidad + " Pa";
+                String TSup = "Tensión superficial: " + c.TensionS + " mN/m";
+
+                res += CM.colorize(Masa) + " ".repeat(Engine.getWidth() - Masa.length() - Densidad.length())+ CD.colorize(Densidad);
+                res += CV.colorize(Viscosidad) + " ".repeat(Engine.getWidth() - Viscosidad.length() - TSup.length())+ CT.colorize(TSup);
+            }
+            else{res += "\n\n";}
+        }
+        else{res += "\n\n\n";}
+        res +=  Colors.CreateTextColor(130,130,130).colorize("━".repeat(Engine.getWidth()));
+
+        return res;
     }
 
     @Override

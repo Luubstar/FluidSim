@@ -9,8 +9,8 @@ public class Fluid extends SimTile{
     public boolean moved;
     public float masa = 100;
     public float densidad = 100;
-    private float viscosidad = 100;
-    private float TensionS = 100;
+    public float viscosidad = 100;
+    public float TensionS = 100;
 
     public Fluid(int ID){super(ID);}
 
