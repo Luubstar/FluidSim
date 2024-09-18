@@ -6,7 +6,7 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://github.com/Luubstar/FluidSim/blob/main/imgs/Main.png" alt="project-screenshot" width="1200" height="1200/">
+<img src="https://github.com/Luubstar/FluidSim/blob/main/imgs/Main.png" alt="project-screenshot" width="1920" height="1080/">
 
   
   
